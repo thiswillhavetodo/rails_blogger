@@ -1,14 +1,34 @@
 class ArticlesController < ApplicationController
 	include ArticlesHelper
-	before_filter :require_login, except: [:show, :index]
+	before_filter :require_login, except: [:show, :index, :archive, :popular, :feed]
+
 	def index
-		@articles = Article.all		
+		@articles = Article.all
+	end
+
+	def archive
+		@articles = Article.all
+		@articles_by_year = Article.all.group_by { |article| article.created_at.strftime("%Y") }
+		@articles_by_month = Article.all.group_by { |article| article.created_at.strftime("%B") }
+	end
+
+	def popular
+		@popular = Article.order('articles.viewcount DESC').limit(3)
+	end
+
+	def feed
+		@articles = Article.all
+		respond_to do |format|
+			format.rss { render :layout => false }
+		end
 	end
 
 	def show
 		@article = Article.find(params[:id])
 		@comment = Comment.new
 		@comment.article_id = @article.id
+		@article.viewcount = @article.viewcount.to_i + 1
+		@article.save
 	end
 
 	def new
@@ -45,4 +65,5 @@ class ArticlesController < ApplicationController
 
 		redirect_to article_path(@article)
 	end
+
 end

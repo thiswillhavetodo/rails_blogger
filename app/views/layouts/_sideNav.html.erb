@@ -1,0 +1,15 @@
+<div id="sideNav">
+	<h1>Links</h1>
+	<ul>
+		<li><%= link_to "Articles List", articles_path %></li>
+		<li><%= link_to "Tags List", tags_path %></li>
+		<li><%= link_to "Archives", archive_path %></li>
+		<li><%= link_to "Most Popular", popular_path %></li>
+		<li><%= link_to "Feed", feed_path %></li>	
+		<li>
+			<% if logged_in? %>
+				<%= link_to "Create New Article", new_article_path %>
+			<% end %>	
+		</li>
+	</ul>
+</div>
